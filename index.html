@@ -1,51 +1,23 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const container = document.getElementById('profiles-container');
-  let allProfiles = [];
-  let activeIndex = 0;
-  const API_KEY = '7dli8bleg4bq8'; // your SheetDB API
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profiles</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Carousel Wrapper -->
+  <div id="profile-wrapper">
+    <div id="profiles-container"></div>
+    <div class="nav-buttons">
+      <button id="prev-btn">Prev</button>
+      <button class="meet-btn">Meet</button>
+      <button id="next-btn">Next</button>
+    </div>
+  </div>
 
-  fetch(`https://sheetdb.io/api/v1/${API_KEY}?limit=50`)
-    .then(res => res.json())
-    .then(profiles => {
-      allProfiles = profiles;
-      renderProfiles(allProfiles);
-      showProfile(activeIndex);
-    });
-
-  function renderProfiles(profiles) {
-    profiles.forEach(profile => {
-      const profileDiv = document.createElement('div');
-      profileDiv.classList.add('profile');
-
-      profileDiv.innerHTML = `
-        <div class="slider">
-          <video src="${profile.video}" autoplay loop muted playsinline></video>
-        </div>
-        <div class="bio-card">
-          <div class="bio-name">${profile.name}</div>
-          <div class="bio-info"><span>Age:</span> ${profile.age}</div>
-          <div class="bio-info"><span>City:</span> ${profile.city}</div>
-          <div class="fruit-pick">${profile.pick}</div>
-        </div>
-      `;
-      container.appendChild(profileDiv);
-    });
-  }
-
-  function showProfile(index) {
-    const profiles = document.querySelectorAll('.profile');
-    profiles.forEach((p, i) => {
-      p.classList.toggle('active', i === index);
-    });
-  }
-
-  document.getElementById('prev-btn').addEventListener('click', () => {
-    activeIndex = (activeIndex - 1 + allProfiles.length) % allProfiles.length;
-    showProfile(activeIndex);
-  });
-
-  document.getElementById('next-btn').addEventListener('click', () => {
-    activeIndex = (activeIndex + 1) % allProfiles.length;
-    showProfile(activeIndex);
-  });
-});
+  <!-- Load Script -->
+  <script src="script.js"></script>
+</body>
+</html>
