@@ -38,6 +38,10 @@ document.addEventListener('DOMContentLoaded', function() {
     profiles.forEach((p, i) => {
       p.classList.toggle('active', i === index);
     });
+
+    // send new height to parent after switching
+    const height = document.body.scrollHeight;
+    window.parent.postMessage({ type: "setHeight", height: height }, "*");
   }
 
   document.getElementById('prev-btn').addEventListener('click', () => {
