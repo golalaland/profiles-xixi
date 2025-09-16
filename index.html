@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profiles Carousel</title>
-</head>
-<body>
-
 <!-- Carousel Container -->
 <div id="profile-wrapper">
   <div id="profiles-container"></div>
@@ -42,19 +33,23 @@
 /* Video Slider */
 .slider {
   position: relative;
-  width: 80%;
+  width: 100%;
   overflow: hidden;
   border-radius: 14px;
   margin-bottom: 4px;
 }
 .slides {
   display: flex;
+  justify-content: center; /* centers video inside */
   transition: transform 0.3s ease;
 }
 .slides video {
-  width: 100%;
+  width: 80%;            /* shrink video */
+  max-width: 260px;      /* keep compact */
+  margin: 0 auto;        /* center horizontally */
   aspect-ratio: 9/16;
   border-radius: 14px;
+  display: block;
   flex-shrink: 0;
 }
 
@@ -146,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function() {
       allProfiles = profiles;
       renderProfiles(profiles);
       showProfile(activeIndex);
-      sendHeight(); // adjust iframe height after load
     });
 
   function renderProfiles(profiles) {
@@ -192,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
         url = url.trim();
         if (!url) return;
         const videoEl = document.createElement('video');
-        videoEl.src = url; // Cloudinary or direct link
+        videoEl.src = url;
         videoEl.autoplay = true;
         videoEl.muted = true;
         videoEl.loop = true;
@@ -226,7 +220,6 @@ document.addEventListener('DOMContentLoaded', function() {
       sessionViews.push(profileID);
       sessionStorage.setItem('viewedProfiles', JSON.stringify(sessionViews));
     }
-    sendHeight(); // resize when switching profile
   }
 
   document.getElementById('prev-btn').addEventListener('click', () => {
@@ -237,19 +230,5 @@ document.addEventListener('DOMContentLoaded', function() {
     activeIndex = (activeIndex < allProfiles.length - 1) ? activeIndex + 1 : 0;
     showProfile(activeIndex);
   });
-
-  // auto-resize for GemPages iframe
-  function sendHeight() {
-    if (window.parent) {
-      window.parent.postMessage(
-        { type: "setHeight", height: document.body.scrollHeight },
-        "*"
-      );
-    }
-  }
-  window.onresize = sendHeight;
 });
 </script>
-
-</body>
-</html>
