@@ -1,128 +1,51 @@
-/* === Wrapper & Layout === */
-#profile-wrapper {
-  text-align: center;
-  max-width: 420px;
-  width: 95%;
-  margin: 0 auto;
-  background: #000;
-  padding: 10px;
-  border-radius: 14px;
-  color: #fff;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-}
+document.addEventListener('DOMContentLoaded', function() {
+  const container = document.getElementById('profiles-container');
+  let allProfiles = [];
+  let activeIndex = 0;
+  const API_KEY = '7dli8bleg4bq8'; // your SheetDB API
 
-/* === Profile Blocks === */
-.profile {
-  display: none;
-  border-radius: 14px;
-  margin-bottom: 10px;
-}
-.profile.active {
-  display: block;
-}
+  fetch(`https://sheetdb.io/api/v1/${API_KEY}?limit=50`)
+    .then(res => res.json())
+    .then(profiles => {
+      allProfiles = profiles;
+      renderProfiles(allProfiles);
+      showProfile(activeIndex);
+    });
 
-/* === Slider & Video === */
-.slider {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border-radius: 14px;
-  margin-bottom: 10px;
-}
+  function renderProfiles(profiles) {
+    profiles.forEach(profile => {
+      const profileDiv = document.createElement('div');
+      profileDiv.classList.add('profile');
 
-.slider video {
-  width: 100%;
-  max-width: 360px; /* keeps it smaller */
-  margin: 0 auto;
-  display: block;
-  aspect-ratio: 9/16;
-  border-radius: 14px;
-  background: #000;
-  object-fit: contain; /* safari fix */
-}
-
-/* === Bio Cards === */
-.bio-card {
-  background: #000;
-  color: #fff;
-  border-radius: 14px;
-  padding: 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-  margin-bottom: 10px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.profile.active .bio-card {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.bio-name {
-  font-size: 22px;
-  font-weight: 800;
-  margin-bottom: 4px;
-}
-.bio-info {
-  font-size: 14px;
-  line-height: 1.4;
-  color: #aaa;
-  margin-bottom: 2px;
-}
-.bio-info span {
-  font-weight: 600;
-  color: #fff;
-}
-.fruit-pick {
-  font-size: 21px;
-  font-weight: 700;
-  margin: 6px 0;
-}
-
-/* === Nav Buttons === */
-.nav-buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-  gap: 10px;
-}
-.nav-buttons button,
-.meet-btn {
-  padding: 6px 18px;
-  border-radius: 800px;
-  font-weight: 900;
-  font-size: 13px;
-  cursor: pointer;
-  border: none;
-  background: #DFF41F;
-  color: #000;
-  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-  flex: 1;
-}
-.nav-buttons button:hover,
-.meet-btn:hover {
-  transform: scale(1.08);
-  background: #c8db1c;
-  box-shadow: 0 4px 12px rgba(223, 244, 31, 0.6);
-}
-.meet-btn {
-  flex: 1;
-  max-width: 120px;
-  margin: 0 auto;
-}
-
-/* === Safari-Specific Fixes === */
-@supports (-webkit-touch-callout: none) {
-  .slider video {
-    max-width: 340px !important; /* force smaller on iOS */
-    height: auto !important;
-    object-fit: contain !important;
+      profileDiv.innerHTML = `
+        <div class="slider">
+          <video src="${profile.video}" autoplay loop muted playsinline></video>
+        </div>
+        <div class="bio-card">
+          <div class="bio-name">${profile.name}</div>
+          <div class="bio-info"><span>Age:</span> ${profile.age}</div>
+          <div class="bio-info"><span>City:</span> ${profile.city}</div>
+          <div class="fruit-pick">${profile.pick}</div>
+        </div>
+      `;
+      container.appendChild(profileDiv);
+    });
   }
-}
 
-html, body {
-  height: 100%;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-}
+  function showProfile(index) {
+    const profiles = document.querySelectorAll('.profile');
+    profiles.forEach((p, i) => {
+      p.classList.toggle('active', i === index);
+    });
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => {
+    activeIndex = (activeIndex - 1 + allProfiles.length) % allProfiles.length;
+    showProfile(activeIndex);
+  });
+
+  document.getElementById('next-btn').addEventListener('click', () => {
+    activeIndex = (activeIndex + 1) % allProfiles.length;
+    showProfile(activeIndex);
+  });
+});
