@@ -1,15 +1,4 @@
-<!-- Carousel Container -->
-<div id="profile-wrapper">
-  <div id="profiles-container"></div>
-  <div class="nav-buttons">
-    <button id="prev-btn">Prev</button>
-    <button class="meet-btn">Meet</button>
-    <button id="next-btn">Next</button>
-  </div>
-</div>
-
-<style>
-/* Wrapper */
+/* === Wrapper & Layout === */
 #profile-wrapper {
   text-align: center;
   max-width: 420px;
@@ -22,62 +11,37 @@
   font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* Profile Cards */
+/* === Profile Blocks === */
 .profile {
   display: none;
   border-radius: 14px;
   margin-bottom: 10px;
 }
-.profile.active { display: block; }
+.profile.active {
+  display: block;
+}
 
-/* Video Slider */
+/* === Slider & Video === */
 .slider {
   position: relative;
   width: 100%;
   overflow: hidden;
   border-radius: 14px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
-.slides {
-  display: flex;
-  transition: transform 0.3s ease;
-  justify-content: center;
-}
-.slides video {
-  width: 100% !important;
-  max-width: 420px;
-  aspect-ratio: 9/16;
-  min-height: 500px;
-  height: auto !important;
-  border-radius: 14px;
-  display: block;
+
+.slider video {
+  width: 100%;
+  max-width: 360px; /* keeps it smaller */
   margin: 0 auto;
+  display: block;
+  aspect-ratio: 9/16;
+  border-radius: 14px;
   background: #000;
-  object-fit: cover;
+  object-fit: contain; /* safari fix */
 }
 
-/* Unmute Button */
-.unmute-btn {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  cursor: pointer;
-  z-index: 5;
-  transition: opacity 0.6s ease;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { transform: translateX(-50%) scale(1); }
-  50% { transform: translateX(-50%) scale(1.05); }
-}
-
-/* Bio Card */
+/* === Bio Cards === */
 .bio-card {
   background: #000;
   color: #fff;
@@ -93,24 +57,38 @@
   opacity: 1;
   transform: translateY(0);
 }
-.bio-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-.bio-info { font-size: 14px; line-height: 1.4; color: #aaa; margin-bottom: 2px; }
-.bio-info span { font-weight: 600; color: #fff; }
-.fruit-pick { font-size: 21px; font-weight: 700; margin: 6px 0; }
-.bio-views { display: inline-flex; align-items: center; font-size: 13px; color: #fff; margin: 6px 0; transition: transform 0.3s ease; }
-.bio-views.bump .eye-icon { transform: scale(1.3); }
-.bio-views.bump .view-count { transform: scale(1.2); color: #fff; }
-.eye-icon { vertical-align: middle; margin-right: 4px; transition: transform 0.3s ease; }
 
-/* Nav Buttons */
+.bio-name {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.bio-info {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #aaa;
+  margin-bottom: 2px;
+}
+.bio-info span {
+  font-weight: 600;
+  color: #fff;
+}
+.fruit-pick {
+  font-size: 21px;
+  font-weight: 700;
+  margin: 6px 0;
+}
+
+/* === Nav Buttons === */
 .nav-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 6px;
-  gap: 8px;
+  margin-top: 8px;
+  gap: 10px;
 }
-.nav-buttons button, .meet-btn {
+.nav-buttons button,
+.meet-btn {
   padding: 6px 18px;
   border-radius: 800px;
   font-weight: 900;
@@ -122,130 +100,29 @@
   transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
   flex: 1;
 }
-.nav-buttons button:hover, .meet-btn:hover {
+.nav-buttons button:hover,
+.meet-btn:hover {
   transform: scale(1.08);
   background: #c8db1c;
   box-shadow: 0 4px 12px rgba(223, 244, 31, 0.6);
 }
-.meet-btn { flex: 1; max-width: 120px; margin: 0 auto; }
-</style>
+.meet-btn {
+  flex: 1;
+  max-width: 120px;
+  margin: 0 auto;
+}
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const container = document.getElementById('profiles-container');
-  let allProfiles = [];
-  let activeIndex = 0;
-  const API_KEY = '7dli8bleg4bq8';
-  let sessionViews = JSON.parse(sessionStorage.getItem('viewedProfiles') || '[]');
-
-  fetch(`https://sheetdb.io/api/v1/${API_KEY}?limit=50`)
-    .then(res => res.json())
-    .then(profiles => {
-      allProfiles = profiles;
-      renderProfiles(profiles);
-      showProfile(activeIndex);
-      sendHeight(); // 🔥 set iframe height after render
-    });
-
-  function renderProfiles(profiles) {
-    profiles.forEach(profile => {
-      const profileDiv = document.createElement('div');
-      profileDiv.classList.add('profile');
-      profileDiv.dataset.customId = profile.CustomID;
-
-      // Slider
-      const slider = document.createElement('div'); slider.classList.add('slider');
-      const slides = document.createElement('div'); slides.classList.add('slides');
-      slider.appendChild(slides);
-
-      // Unmute button
-      const unmuteBtn = document.createElement('div');
-      unmuteBtn.classList.add('unmute-btn');
-      unmuteBtn.textContent='🔊 Tap to Unmute';
-      slider.appendChild(unmuteBtn);
-
-      profileDiv.appendChild(slider);
-
-      // Bio card
-      const bio = document.createElement('div'); bio.classList.add('bio-card');
-      bio.innerHTML = `
-        <div class="bio-name">${profile.Name}</div>
-        <div class="bio-info"><span>📍 Location:</span> ${profile.Location}</div>
-        <div class="bio-info"><span>🎂 Age:</span> ${profile.Age}</div>
-        <div class="bio-info"><span>💖 Orientation:</span> ${profile.Orientation}</div>
-        <div class="fruit-pick">${profile.FruitPick||''}</div>
-        <div class="bio-views" data-count="${profile.ViewCount||0}">
-          <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 4.5C7.305 4.5 3.153 7.364 1 12c2.153 4.636 6.305 7.5 11 7.5s8.847-2.864 11-7.5c-2.153-4.636-6.305-7.5-11-7.5zm0 12a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/>
-          </svg>
-          <span class="view-count">${profile.ViewCount||0} views</span>
-        </div>
-      `;
-      profileDiv.appendChild(bio);
-      container.appendChild(profileDiv);
-
-      // Render videos
-      const slidesDiv = slider.querySelector('.slides');
-      (profile.VideoIDs || '').split(/[\n,]+/).forEach(url => {
-        url = url.trim();
-        if (!url) return;
-        const videoEl = document.createElement('video');
-        videoEl.src = url; // Cloudinary or direct link
-        videoEl.autoplay = true;
-        videoEl.muted = true;
-        videoEl.loop = true;
-        videoEl.playsInline = true;
-        videoEl.setAttribute("playsinline", "");
-        videoEl.setAttribute("webkit-playsinline", "");
-        videoEl.controls = false;
-        videoEl.style.objectFit = "cover";
-        slidesDiv.appendChild(videoEl);
-
-        let muted = true;
-        unmuteBtn.addEventListener('click', () => {
-          muted = !muted;
-          videoEl.muted = muted;
-          unmuteBtn.textContent = muted ? '🔊 Tap to Unmute' : '🔇 Tap to Mute';
-        });
-      });
-    });
+/* === Safari-Specific Fixes === */
+@supports (-webkit-touch-callout: none) {
+  .slider video {
+    max-width: 340px !important; /* force smaller on iOS */
+    height: auto !important;
+    object-fit: contain !important;
   }
+}
 
-  function showProfile(index) {
-    const profiles = document.querySelectorAll('.profile');
-    profiles.forEach(p => p.classList.remove('active'));
-    const current = profiles[index];
-    if (!current) return;
-    current.classList.add('active');
-
-    const profileID = current.dataset.customId;
-    const viewsEl = current.querySelector('.bio-views');
-    if (profileID && !sessionViews.includes(profileID)) {
-      let count = parseInt(viewsEl.dataset.count||0);
-      count++; viewsEl.dataset.count = count;
-      viewsEl.querySelector('.view-count').textContent = count + " views";
-      sessionViews.push(profileID);
-      sessionStorage.setItem('viewedProfiles', JSON.stringify(sessionViews));
-    }
-
-    sendHeight(); // 🔥 update iframe height on change
-  }
-
-  document.getElementById('prev-btn').addEventListener('click', () => {
-    activeIndex = (activeIndex > 0) ? activeIndex - 1 : allProfiles.length - 1;
-    showProfile(activeIndex);
-  });
-  document.getElementById('next-btn').addEventListener('click', () => {
-    activeIndex = (activeIndex < allProfiles.length - 1) ? activeIndex + 1 : 0;
-    showProfile(activeIndex);
-  });
-
-  // 🔥 Post height to parent (GemPages)
-  function sendHeight() {
-    window.parent.postMessage(
-      { type: "setHeight", height: document.body.scrollHeight },
-      "*"
-    );
-  }
-});
-</script>
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
