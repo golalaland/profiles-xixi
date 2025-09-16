@@ -36,17 +36,18 @@
       border-radius: 14px;
       overflow: hidden;
     }
-
-    .slider video {
-      width: 100% !important;
-      height: auto !important;
-      max-height: 70vh;
-      aspect-ratio: 9/16;
-      border-radius: 14px;
-      background: #000;
-      display: block;
-      object-fit: cover;
-      -webkit-transform: translateZ(0); /* Safari fix */
+.slider video {
+  width: 100% !important;
+  max-width: 360px;      /* ensures it’s not too wide */
+  height: auto !important;
+  min-height: 480px;     /* keeps it tall on Safari */
+  aspect-ratio: 9/16;
+  border-radius: 14px;
+  background: #000;
+  display: block;
+  margin: 0 auto;        /* keeps it centered */
+  object-fit: cover;
+  -webkit-transform: translateZ(0); /* Safari fix */
     }
 
     .bio-card {
