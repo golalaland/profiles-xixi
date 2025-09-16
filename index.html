@@ -19,5 +19,17 @@
 
   <!-- Load Script -->
   <script src="script.js"></script>
+
+  <!-- Auto-resize iframe height -->
+  <script>
+    function sendHeight() {
+      const height = document.body.scrollHeight;
+      window.parent.postMessage({ type: "setHeight", height: height }, "*");
+    }
+    window.addEventListener("load", sendHeight);
+    window.addEventListener("resize", sendHeight);
+    const observer = new MutationObserver(sendHeight);
+    observer.observe(document.body, { childList: true, subtree: true });
+  </script>
 </body>
 </html>
