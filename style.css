@@ -1,7 +1,7 @@
 /* === Wrapper & Layout === */
 #profile-wrapper {
   text-align: center;
-  max-width: 320px; /* smaller container */
+  max-width: 360px;
   width: 95%;
   margin: 0 auto;
   background: #000;
@@ -17,7 +17,9 @@
   border-radius: 14px;
   margin-bottom: 10px;
 }
-.profile.active { display: block; }
+.profile.active {
+  display: block;
+}
 
 /* === Slider & Video === */
 .slider {
@@ -27,15 +29,16 @@
   border-radius: 14px;
   margin-bottom: 10px;
 }
+
 .slider video {
-  width: 90%;              /* make video smaller */
-  max-width: 280px;        /* restrict max size */
+  width: 100%;
+  max-width: 320px;   /* reduce video size */
   margin: 0 auto;
   display: block;
-  aspect-ratio: 9/16;
   border-radius: 14px;
   background: #000;
-  object-fit: contain;     /* safari fix */
+  object-fit: contain;
+  height: auto;
 }
 
 /* === Bio Cards === */
@@ -54,10 +57,26 @@
   opacity: 1;
   transform: translateY(0);
 }
-.bio-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-.bio-info { font-size: 14px; line-height: 1.4; color: #aaa; margin-bottom: 2px; }
-.bio-info span { font-weight: 600; color: #fff; }
-.fruit-pick { font-size: 21px; font-weight: 700; margin: 6px 0; }
+.bio-name {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.bio-info {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #aaa;
+  margin-bottom: 2px;
+}
+.bio-info span {
+  font-weight: 600;
+  color: #fff;
+}
+.fruit-pick {
+  font-size: 21px;
+  font-weight: 700;
+  margin: 6px 0;
+}
 
 /* === Nav Buttons === */
 .nav-buttons {
@@ -67,7 +86,8 @@
   margin-top: 8px;
   gap: 10px;
 }
-.nav-buttons button, .meet-btn {
+.nav-buttons button,
+.meet-btn {
   padding: 6px 18px;
   border-radius: 800px;
   font-weight: 900;
@@ -79,22 +99,29 @@
   transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
   flex: 1;
 }
-.nav-buttons button:hover, .meet-btn:hover {
+.nav-buttons button:hover,
+.meet-btn:hover {
   transform: scale(1.08);
   background: #c8db1c;
   box-shadow: 0 4px 12px rgba(223, 244, 31, 0.6);
 }
-.meet-btn { flex: 1; max-width: 120px; margin: 0 auto; }
+.meet-btn {
+  flex: 1;
+  max-width: 120px;
+  margin: 0 auto;
+}
 
 /* === Safari-Specific Fixes === */
 @supports (-webkit-touch-callout: none) {
   .slider video {
-    max-width: 260px !important; /* force smaller on iOS */
+    max-width: 340px !important;
+    width: 100% !important;
     height: auto !important;
     object-fit: contain !important;
   }
 }
 
+/* === General Resets === */
 html, body {
   height: 100%;
   overflow-x: hidden;
