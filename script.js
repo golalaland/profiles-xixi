@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const container = document.getElementById('profiles-container');
   let allProfiles = [];
   let activeIndex = 0;
-  const API_KEY = '7dli8bleg4bq8'; // replace if needed
+  const API_KEY = 'hbsl661b2wi59'; // replace if needed
 
   fetch(`https://sheetdb.io/api/v1/${API_KEY}?limit=50`)
     .then(res => res.json())
